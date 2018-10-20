@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker-compose build
+
+ notifications:
+    slack: fuzzy-matching:kyPay6TFOQrTMffKJRy6FoAZ

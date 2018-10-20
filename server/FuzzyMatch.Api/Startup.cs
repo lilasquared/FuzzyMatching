@@ -1,6 +1,6 @@
 ﻿using System;
-using FuzzyMatch.Api.Behaviors;
 using MediatR;
+using MediatR.CQRS;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +24,7 @@ namespace FuzzyMatch.Api
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwaggerGen(config =>
-            {
-                config.SwaggerDoc("v1", new Info { Title = "API", Version = "v1" });
-            });
+            services.AddSwaggerGen(config => { config.SwaggerDoc("v1", new Info {Title = "API", Version = "v1"}); });
 
             var container = new Container();
             container.Configure(config =>
@@ -60,10 +57,7 @@ namespace FuzzyMatch.Api
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(config =>
-            {
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-            });
+            app.UseSwaggerUI(config => { config.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"); });
 
             app.MapWhen(
                 context => context.Request.Path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase),

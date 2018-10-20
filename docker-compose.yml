@@ -1,0 +1,9 @@
+version: '3'
+services:
+  api:
+    image: fuzzymatch.api
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
