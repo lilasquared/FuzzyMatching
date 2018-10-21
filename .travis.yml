@@ -6,13 +6,13 @@ services:
 jobs:
   include:
     - stage: build
-      script: docker-compose build
-    - stage: deploy
-      script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-    - script: docker tag fuzzymatch-server $DOCKER_USER/fuzzymatch-server
-    - script: docker tag fuzzymatch-client $DOCKER_USER/fuzzymatch-client
-    - script: docker push $DOCKER_USER/fuzzymatch-server
-    - script: docker push $DOCKER_USER/fuzzymatch-client
+      script:
+        - docker-compose build
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+        - docker tag fuzzymatch-server $DOCKER_USER/fuzzymatch-server
+        - docker tag fuzzymatch-client $DOCKER_USER/fuzzymatch-client
+        - docker push $DOCKER_USER/fuzzymatch-server
+        - docker push $DOCKER_USER/fuzzymatch-client
 
 notifications:
   slack: fuzzy-matching:kyPay6TFOQrTMffKJRy6FoAZ
