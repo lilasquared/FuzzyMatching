@@ -13,6 +13,6 @@ namespace FuzzyMatch.Api
 
         public static IWebHostBuilder CreateWebHostBuilder(String[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                   .UseStartup<Startup>();
     }
 }
