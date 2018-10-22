@@ -5,7 +5,7 @@ using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
 
-namespace FuzzyMatch.Api.GenericHandlers
+namespace FuzzyMatch.Core
 {
     public class GetAllHandler<TModel> : IRequestHandler<GetAll<TModel>, IResult<IEnumerable<TModel>>>
     {

@@ -4,7 +4,7 @@ using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
 
-namespace FuzzyMatch.Api.GenericHandlers
+namespace FuzzyMatch.Core
 {
     public class GetOneHandler<TModel> : IRequestHandler<GetOne<TModel>, IResult<TModel>>
     {

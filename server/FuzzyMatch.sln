@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuzzyMatch.Api", "FuzzyMatch.Api\FuzzyMatch.Api.csproj", "{53456CB7-4879-4CC3-BB62-D83C2A36E57B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediatR.CQRS", "MediatR.CQRS\MediatR.CQRS.csproj", "{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediatR.CQRS", "MediatR.CQRS\MediatR.CQRS.csproj", "{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{151D8C2F-D507-4760-A2FD-EBCBB6F8BE70}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\docker-compose.yml = ..\docker-compose.yml
 		Dockerfile = Dockerfile
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyMatch.Core", "FuzzyMatch.Core\FuzzyMatch.Core.csproj", "{977B9BAF-E1F0-4298-8BA0-A38C857046D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +30,10 @@ Global
 		{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{977B9BAF-E1F0-4298-8BA0-A38C857046D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{977B9BAF-E1F0-4298-8BA0-A38C857046D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{977B9BAF-E1F0-4298-8BA0-A38C857046D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{977B9BAF-E1F0-4298-8BA0-A38C857046D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 ﻿using System;
-using FuzzyMatch.Api.Abstracts;
+using MediatR.CQRS;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 

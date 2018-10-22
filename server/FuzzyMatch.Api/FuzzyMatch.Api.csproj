@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FuzzyMatch.Core\FuzzyMatch.Core.csproj" />
     <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
   </ItemGroup>
 

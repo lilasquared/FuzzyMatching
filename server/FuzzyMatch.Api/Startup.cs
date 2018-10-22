@@ -3,6 +3,7 @@ using System.Linq;
 using FuzzyMatch.Api.Abstracts;
 using FuzzyMatch.Api.Conventions;
 using FuzzyMatch.Api.Providers;
+using FuzzyMatch.Core;
 using MediatR;
 using MediatR.CQRS;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +40,7 @@ namespace FuzzyMatch.Api
                 });
             });
 
-            var controllables = new Container(config =>
+            var types = new Container(config =>
                 {
                     config.Scan(scan =>
                     {
@@ -49,9 +50,10 @@ namespace FuzzyMatch.Api
                     });
                 })
                 .GetAllInstances<IControllable>()
+                .Select(x => x.GetType())
                 .ToList();
 
-            var featureProvider = new DynamicControllerFeatureProvider(controllables);
+            var featureProvider = new DynamicControllerFeatureProvider(typeof(BaseController<>), types);
 
             services.AddMvc(o => o.Conventions.Add(new DynamicControllerRouteConvention()))
                     .ConfigureApplicationPartManager(m => m.FeatureProviders.Add(featureProvider))
@@ -72,7 +74,13 @@ namespace FuzzyMatch.Api
                 config.For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
                 config.For(typeof(IPipelineBehavior<,>)).Add(typeof(ExceptionHandlerBehavior<,>));
 
-                config.AddGenericHandlers(controllables);
+                config.AddGenericHandlers(types, new []
+                {
+                    typeof(GetAllHandler<>),
+                    typeof(GetOneHandler<>),
+                    typeof(CreateHandler<>),
+                    typeof(DeleteHandler<>)
+                });
 
                 config.Populate(services);
             });
