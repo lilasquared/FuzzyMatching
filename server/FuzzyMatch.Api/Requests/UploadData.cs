@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Datasets;
+using FuzzyMatch.Api.Models;
 using MediatR;
 using MediatR.CQRS;
 

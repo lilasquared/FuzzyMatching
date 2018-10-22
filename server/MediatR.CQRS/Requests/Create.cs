@@ -1,6 +1,4 @@
-﻿using MediatR.CQRS;
-
-namespace FuzzyMatch.Api.Requests
+﻿namespace MediatR.CQRS.Requests
 {
     public class Create<TModel> : IAction<TModel>
     {

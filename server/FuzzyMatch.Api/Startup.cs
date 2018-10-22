@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using FuzzyMatch.Api.Abstracts;
+using FuzzyMatch.Api.Conventions;
+using FuzzyMatch.Api.Providers;
 using MediatR;
 using MediatR.CQRS;
 using Microsoft.AspNetCore.Builder;
@@ -8,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StructureMap;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FuzzyMatch.Api
 {
@@ -23,8 +28,34 @@ namespace FuzzyMatch.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddSwaggerGen(config => { config.SwaggerDoc("v1", new Info {Title = "API", Version = "v1"}); });
+            services.AddSwaggerGen(config =>
+            {
+                config.SwaggerDoc("v1", new Info {Title = "API", Version = "v1"});
+                config.TagActionsBy(api =>
+                {
+                    api.TryGetMethodInfo(out var info);
+
+                    return info.DeclaringType.GetGenericArguments()?[0]?.Name ?? info.DeclaringType.Name;
+                });
+            });
+
+            var controllables = new Container(config =>
+                {
+                    config.Scan(scan =>
+                    {
+                        scan.AssembliesFromApplicationBaseDirectory();
+
+                        scan.AddAllTypesOf<IControllable>();
+                    });
+                })
+                .GetAllInstances<IControllable>()
+                .ToList();
+
+            var featureProvider = new DynamicControllerFeatureProvider(controllables);
+
+            services.AddMvc(o => o.Conventions.Add(new DynamicControllerRouteConvention()))
+                    .ConfigureApplicationPartManager(m => m.FeatureProviders.Add(featureProvider))
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var container = new Container();
             container.Configure(config =>
@@ -33,7 +64,6 @@ namespace FuzzyMatch.Api
                 {
                     scan.AssembliesFromApplicationBaseDirectory();
                     scan.WithDefaultConventions();
-
                     scan.ConnectImplementationsToTypesClosing(typeof(IRequestHandler<>));
                     scan.ConnectImplementationsToTypesClosing(typeof(IRequestHandler<,>));
                 });
@@ -41,6 +71,8 @@ namespace FuzzyMatch.Api
                 config.For<IMediator>().Use<Mediator>();
                 config.For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
                 config.For(typeof(IPipelineBehavior<,>)).Add(typeof(ExceptionHandlerBehavior<,>));
+
+                config.AddGenericHandlers(controllables);
 
                 config.Populate(services);
             });
@@ -57,26 +89,11 @@ namespace FuzzyMatch.Api
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI(config => { config.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"); });
-
-            app.MapWhen(
-                context => context.Request.Path.Value.StartsWith("/api", StringComparison.InvariantCultureIgnoreCase),
-                branch => branch.UseMvc());
-
-            app.MapWhen(
-                context => !context.Request.Path.Value.Contains("."),
-                branch =>
-                {
-                    branch.Use((context, next) =>
-                    {
-                        context.Request.Path = new Microsoft.AspNetCore.Http.PathString("/index.html");
-                        return next();
-                    });
-                    branch.UseStaticFiles();
-                }
-            );
-
-            app.UseStaticFiles();
+            app.UseSwaggerUI(config =>
+            {
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+            });
+            app.UseMvc();
         }
     }
 }

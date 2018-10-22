@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Datasets;
-using FuzzyMatch.Api.Requests;
 using MediatR;
 using MediatR.CQRS;
+using MediatR.CQRS.Requests;
 
-namespace FuzzyMatch.Api.Handlers
+namespace FuzzyMatch.Api.GenericHandlers
 {
-    public abstract class GetAllHandler<TModel> : IRequestHandler<GetAll<TModel>, IResult<IEnumerable<TModel>>>
+    public class GetAllHandler<TModel> : IRequestHandler<GetAll<TModel>, IResult<IEnumerable<TModel>>>
     {
         public Task<IResult<IEnumerable<TModel>>> Handle(GetAll<TModel> request, CancellationToken cancellationToken)
         {
@@ -21,6 +20,4 @@ namespace FuzzyMatch.Api.Handlers
             }, cancellationToken);
         }
     }
-
-    public class GetAllDatasets : GetAllHandler<Dataset> { }
 }
