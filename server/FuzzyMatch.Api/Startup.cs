@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using FuzzyMatch.Api.Abstracts;
-using FuzzyMatch.Api.Conventions;
+using FuzzyMatch.Api.Models;
 using FuzzyMatch.Api.Providers;
 using FuzzyMatch.Core;
 using MediatR;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QuickRest;
 using StructureMap;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -40,18 +42,11 @@ namespace FuzzyMatch.Api
                 });
             });
 
-            var types = new Container(config =>
-                {
-                    config.Scan(scan =>
-                    {
-                        scan.AssembliesFromApplicationBaseDirectory();
-
-                        scan.AddAllTypesOf<IControllable>();
-                    });
-                })
-                .GetAllInstances<IControllable>()
-                .Select(x => x.GetType())
-                .ToList();
+            var types = typeof(Dataset)
+                .Assembly
+                .GetExportedTypes()
+                .Where(x => x.GetCustomAttributes<QuickRouteAttribute>().Any())
+                .ToArray();
 
             var featureProvider = new DynamicControllerFeatureProvider(typeof(BaseController<>), types);
 

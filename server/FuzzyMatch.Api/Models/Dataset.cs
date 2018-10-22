@@ -1,13 +1,13 @@
 ﻿using System;
+using QuickRest;
 
-namespace FuzzyMatch.Core.Datasets
+namespace FuzzyMatch.Api.Models
 {
-    public class Dataset : ControllableModel
+    [QuickRoute(BaseRoute = "/api/datasets")]
+    public class Dataset
     {
         public Int32 Id { get; set; }
         public String Name { get; set; }
         public String FileId { get; set; }
-
-        public override String GetRoute() => "/api/datasets";
     }
 }
