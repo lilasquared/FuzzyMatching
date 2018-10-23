@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
-    <ProjectReference Include="..\QuickRest\QuickRest.csproj" />
+    <ProjectReference Include="..\QuickApi\QuickApi.csproj" />
   </ItemGroup>
 
 </Project>

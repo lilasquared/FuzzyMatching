@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>QuickApi</AssemblyName>
+    <RootNamespace>QuickApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

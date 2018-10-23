@@ -1,9 +1,9 @@
 ﻿using System;
-using QuickRest;
+using QuickApi;
 
 namespace FuzzyMatch.Api.Models
 {
-    [QuickRoute(BaseRoute = "/api/datasets")]
+    [QuickApiRoute(BaseRoute = "/api/datasets")]
     public class Dataset
     {
         public Int32 Id { get; set; }

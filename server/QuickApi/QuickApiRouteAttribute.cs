@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace QuickRest
+namespace QuickApi
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class QuickRouteAttribute : Attribute
+    public class QuickApiRouteAttribute : Attribute
     {
         public String BaseRoute { get; set; }
     }

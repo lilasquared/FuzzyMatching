@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace QuickRest
+namespace QuickApi
 {
-    public class DynamicControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
+    public class QuickApiControllerFeatureProvider : IApplicationFeatureProvider<ControllerFeature>
     {
         private readonly Type _controllerType;
         private readonly IEnumerable<Type> _modelTypes;
 
-        public DynamicControllerFeatureProvider(Type controllerType,
+        public QuickApiControllerFeatureProvider(Type controllerType,
                                                 params Type[] modelTypes)
             : this(controllerType, modelTypes.AsEnumerable()) { }
 
-        public DynamicControllerFeatureProvider(Type controllerType, IEnumerable<Type> modelTypes)
+        public QuickApiControllerFeatureProvider(Type controllerType, IEnumerable<Type> modelTypes)
         {
             if (controllerType == null)
             {

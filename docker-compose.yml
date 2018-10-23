@@ -1,15 +1,8 @@
 version: '3'
 services:
-  api:
+  app:
     image: fuzzymatch-server
     build: 
-      context: ./server
+      context: ./
     ports:
-      - "5000:80"
-
-  client:
-    image: fuzzymatch-client
-    build:
-      context: ./client
-    ports:
-      - "80:8080"
+      - "80:80"

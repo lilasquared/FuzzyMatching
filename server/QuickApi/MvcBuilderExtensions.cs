@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace QuickRest
+namespace QuickApi
 {
     public static class MvcBuilderExtensions
     {
@@ -35,9 +35,9 @@ namespace QuickRest
                                               Type controllerType,
                                               IEnumerable<Type> modelTypes)
         {
-            builder.AddMvcOptions(options => options.Conventions.Add(new DynamicControllerRouteConvention()));
+            builder.AddMvcOptions(options => options.Conventions.Add(new QuickApiControllerRouteConvention()));
 
-            var featureProvider = new DynamicControllerFeatureProvider(controllerType, modelTypes);
+            var featureProvider = new QuickApiControllerFeatureProvider(controllerType, modelTypes);
             builder.ConfigureApplicationPartManager(m => m.FeatureProviders.Add(featureProvider));
 
             return builder;
