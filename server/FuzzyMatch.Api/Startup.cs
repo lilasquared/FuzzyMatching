@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using FuzzyMatch.Api.Abstracts;
 using FuzzyMatch.Api.Models;
 using FuzzyMatch.Api.Providers;
@@ -44,15 +43,13 @@ namespace FuzzyMatch.Api
 
             var types = typeof(Dataset)
                 .Assembly
-                .GetExportedTypes()
-                .Where(x => x.GetCustomAttributes<QuickRouteAttribute>().Any())
+                .GetQuickApiTypes()
                 .ToArray();
 
-            var featureProvider = new DynamicControllerFeatureProvider(typeof(BaseController<>), types);
-
-            services.AddMvc(o => o.Conventions.Add(new DynamicControllerRouteConvention()))
-                    .ConfigureApplicationPartManager(m => m.FeatureProviders.Add(featureProvider))
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services
+                .AddMvc()
+                .AddQuickApi(typeof(BaseController<>), types)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var container = new Container();
             container.Configure(config =>
