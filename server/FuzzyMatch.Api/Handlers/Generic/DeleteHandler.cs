@@ -4,7 +4,7 @@ using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
 
-namespace FuzzyMatch.Core
+namespace FuzzyMatch.Api.Handlers.Generic
 {
     public class DeleteHandler<TModel> : IRequestHandler<Delete<TModel>, IResult<Unit>>
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using FuzzyMatch.Api.Abstracts;
+using FuzzyMatch.Api.Handlers.Generic;
 using FuzzyMatch.Api.Models;
 using FuzzyMatch.Api.Providers;
-using FuzzyMatch.Core;
 using MediatR;
 using MediatR.CQRS;
 using Microsoft.AspNetCore.Builder;
