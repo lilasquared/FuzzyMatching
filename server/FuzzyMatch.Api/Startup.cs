@@ -83,17 +83,22 @@ namespace FuzzyMatch.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
             });
+
             app.UseMvc();
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSpa(builder => builder.UseProxyToSpaDevelopmentServer("http://localhost:3000"));
+                return;
+            }
+
+            app.UseSpa(x => { });
         }
     }
 }

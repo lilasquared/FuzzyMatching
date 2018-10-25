@@ -1,20 +1,20 @@
 FROM microsoft/dotnet:2.1-sdk AS server
 WORKDIR /src
-COPY . .
+COPY server/ .
 RUN dotnet restore
 RUN dotnet publish --output /build/ --configuration Release
 
-FROM mhart/alpine-node
+FROM mhart/alpine-node AS client
 WORKDIR /src
-COPY . .
+COPY client/ .
 RUN npm install -g yarn
-RUN cd client/ && yarn install && yarn build
+RUN yarn && yarn build
 
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /opt
 EXPOSE 80
 
-COPY --from=server /src/build .
-COPY --from=client /src/client/build /opt/wwwroot
+COPY --from=server /build .
+COPY --from=client /src/build /opt/wwwroot
 
 ENTRYPOINT ["dotnet", "FuzzyMatch.Api.dll"]

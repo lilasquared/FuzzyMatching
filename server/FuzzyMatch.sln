@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuzzyMatch.Api", "server\FuzzyMatch.Api\FuzzyMatch.Api.csproj", "{53456CB7-4879-4CC3-BB62-D83C2A36E57B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuzzyMatch.Api", "FuzzyMatch.Api\FuzzyMatch.Api.csproj", "{53456CB7-4879-4CC3-BB62-D83C2A36E57B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediatR.CQRS", "server\MediatR.CQRS\MediatR.CQRS.csproj", "{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediatR.CQRS", "MediatR.CQRS\MediatR.CQRS.csproj", "{E65C65E0-E95A-4800-BF2F-9BA0272BFEA1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{151D8C2F-D507-4760-A2FD-EBCBB6F8BE70}"
 	ProjectSection(SolutionItems) = preProject
-		.dockerignore = .dockerignore
-		.gitignore = .gitignore
-		.travis.yml = .travis.yml
-		docker-compose.yml = docker-compose.yml
-		Dockerfile = Dockerfile
-		README.md = README.md
+		..\.dockerignore = ..\.dockerignore
+		..\.gitignore = ..\.gitignore
+		..\.travis.yml = ..\.travis.yml
+		..\docker-compose.yml = ..\docker-compose.yml
+		..\Dockerfile = ..\Dockerfile
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickApi", "server\QuickApi\QuickApi.csproj", "{8451919B-0239-4628-98D6-D9CC03729D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickApi", "QuickApi\QuickApi.csproj", "{8451919B-0239-4628-98D6-D9CC03729D9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
