@@ -5,4 +5,11 @@ services:
     build:
       context: ./
     ports:
-      - "5000:80"
+      - "80:80"
+    volumes:
+      - fuzzy-db:/data
+    environment:
+      - DB_PATH=/data/data.db
+
+volumes:
+  fuzzy-db: {}

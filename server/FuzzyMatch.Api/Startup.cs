@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FuzzyMatch.Api.Abstracts;
+using FuzzyMatch.Api.Configuration;
 using FuzzyMatch.Api.Handlers.Generic;
 using FuzzyMatch.Api.Models;
 using FuzzyMatch.Api.Providers;
@@ -65,6 +66,14 @@ namespace FuzzyMatch.Api
                 config.For<IMediator>().Use<Mediator>();
                 config.For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
                 config.For(typeof(IPipelineBehavior<,>)).Add(typeof(ExceptionHandlerBehavior<,>));
+
+                config
+                    .For<DatabaseOptions>()
+                    .Use(x => new DatabaseOptions
+                    {
+                        Path = Environment.GetEnvironmentVariable("DB_PATH")
+                    })
+                    .Singleton();
 
                 config.AddGenericHandlers(types, new []
                 {
