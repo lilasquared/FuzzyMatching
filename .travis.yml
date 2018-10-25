@@ -9,10 +9,8 @@ jobs:
       script:
         - docker-compose build
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-        - docker tag fuzzymatch-server $DOCKER_USER/fuzzymatch-server
-        - docker tag fuzzymatch-client $DOCKER_USER/fuzzymatch-client
-        - docker push $DOCKER_USER/fuzzymatch-server
-        - docker push $DOCKER_USER/fuzzymatch-client
+        - docker tag fuzzy $DOCKER_USER/fuzzy
+        - docker push $DOCKER_USER/fuzzy
 
 notifications:
   slack: fuzzy-matching:kyPay6TFOQrTMffKJRy6FoAZ
