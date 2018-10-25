@@ -98,6 +98,7 @@ namespace FuzzyMatch.Api
                 return;
             }
 
+            app.UseStaticFiles();
             app.UseSpa(x => { });
         }
     }
