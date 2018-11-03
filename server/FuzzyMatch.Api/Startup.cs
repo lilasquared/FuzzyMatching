@@ -38,7 +38,9 @@ namespace FuzzyMatch.Api
                 {
                     api.TryGetMethodInfo(out var info);
 
-                    return info.DeclaringType.GetGenericArguments()?[0]?.Name ?? info.DeclaringType.Name;
+                    return info.DeclaringType.GetGenericArguments().Any()
+                        ? info.DeclaringType.GetGenericArguments().First().Name
+                        : info.DeclaringType.Name;
                 });
             });
 
