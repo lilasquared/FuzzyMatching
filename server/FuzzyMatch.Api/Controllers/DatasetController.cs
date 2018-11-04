@@ -49,6 +49,17 @@ namespace FuzzyMatch.Api.Controllers
                 .Send();
         }
 
+        [HttpGet]
+        [Route("{id}/file")]
+        public async Task<IActionResult> GetFile(Int32 id)
+        {
+            return await _mediator
+                .Try(new GetDatasetFile(id))
+                .OnSuccess(file => File(file.Contents, "text/plain", file.Name))
+                .OnFailure(result => BadRequest())
+                .Send();
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> Delete(Int32 id)
