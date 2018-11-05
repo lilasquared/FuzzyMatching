@@ -37,7 +37,7 @@ namespace FuzzyMatch.Api.Abstracts
         }
 
         [HttpPost]
-        public Task<IActionResult> Create(T model)
+        public Task<IActionResult> Create([FromBody] T model)
         {
             return _mediator
                 .Try(new Create<T>(model))

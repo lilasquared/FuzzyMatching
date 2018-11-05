@@ -4,7 +4,7 @@ import { Panel, Table } from "react-bootstrap"
 import IconButton from "./IconButton"
 
 export default function StoredMatches(props) {
-  const { matches } = props
+  const { matches, handleDelete } = props
 
   const matchList = matches.map(x => (
     <tr key={x.id}>
@@ -20,6 +20,14 @@ export default function StoredMatches(props) {
           type="success"
           title="Process Match"
           icon="play"
+        />
+        &nbsp;
+        <IconButton
+          size="xsmall"
+          type="danger"
+          title="Delete Match"
+          icon="remove"
+          onClick={handleDelete(x.id)}
         />
       </td>
     </tr>

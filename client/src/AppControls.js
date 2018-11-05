@@ -7,9 +7,10 @@ import {
   FormControl,
   ControlLabel,
 } from "react-bootstrap"
+import axios from "axios"
 
 export default function AppControls(props) {
-  const { datasets } = props
+  const { datasets, onSuccess } = props
 
   const options = datasets.map(x => (
     <option key={x.id} value={x.id}>
@@ -19,9 +20,14 @@ export default function AppControls(props) {
 
   const onSubmit = e => {
     e.preventDefault()
-    console.log(e.target.dataset1.value)
-    console.log(e.target.dataset2.value)
-    console.log(e.target.threshold.value)
+
+    axios
+      .post("/api/matches", {
+        sourceId: e.target.source.value,
+        lookupId: e.target.lookup.value,
+        threshold: e.target.threshold.value,
+      })
+      .then(onSuccess)
     e.target.reset()
   }
 
@@ -32,14 +38,14 @@ export default function AppControls(props) {
       <Panel.Heading>Create a Match</Panel.Heading>
       <Panel.Body>
         <Form onSubmit={onSubmit}>
-          <FormGroup controlId="dataset1">
-            <ControlLabel>Choose a Dataset</ControlLabel>
+          <FormGroup controlId="source">
+            <ControlLabel>Choose a Source Dataset</ControlLabel>
             <FormControl componentClass="select" required>
               {options}
             </FormControl>
           </FormGroup>
-          <FormGroup controlId="dataset2">
-            <ControlLabel>Choose a Dataset</ControlLabel>
+          <FormGroup controlId="lookup">
+            <ControlLabel>Choose a Lookup Dataset</ControlLabel>
             <FormControl componentClass="select" required>
               {options}
             </FormControl>

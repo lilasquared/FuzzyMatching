@@ -24,5 +24,5 @@ export default function usePolling(url, interval) {
     [timestamp]
   )
 
-  return resource
+  return [resource, refreshResource]
 }

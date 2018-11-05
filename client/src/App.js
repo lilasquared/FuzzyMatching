@@ -12,7 +12,7 @@ export default function App() {
     "/api/datasets"
   )
 
-  const matches = usePolling("/api/matches", 5000)
+  const [matches, refreshMatches] = usePolling("/api/matches", 5000)
   useDidMount(() => {
     refreshDatasets().catch(() => {
       console.log("cancel useResource")
@@ -24,18 +24,22 @@ export default function App() {
     return axios.delete(`/api/datasets/${id}`).then(refreshDatasets)
   }
 
+  const deleteMatch = id => () => {
+    return axios.delete(`/api/matches/${id}`).then(refreshMatches)
+  }
+
   return (
     <Grid>
       <Row>
         <Col sm={12} md={6}>
           <Row>
             <Col sm={12}>
-              <AppControls datasets={datasets} />
+              <AppControls datasets={datasets} onSuccess={refreshMatches} />
             </Col>
           </Row>
           <Row>
             <Col sm={12}>
-              <StoredMatches matches={matches} />
+              <StoredMatches matches={matches} handleDelete={deleteMatch} />
             </Col>
           </Row>
         </Col>

@@ -27,18 +27,18 @@ export default function Dataset(props) {
       <th className="text-right">
         <IconButton
           size="xsmall"
-          type="danger"
-          title="Delete Dataset"
-          onClick={handleDelete}
-          icon="remove"
+          type="info"
+          title="Download File"
+          icon="download-alt"
+          onClick={downloadFile(id)}
         />
         &nbsp;
         <IconButton
           size="xsmall"
-          type="info"
-          title="Download File"
-          onClick={downloadFile(id)}
-          icon="download-alt"
+          type="danger"
+          title="Delete Dataset"
+          icon="remove"
+          onClick={handleDelete}
         />
       </th>
     </tr>

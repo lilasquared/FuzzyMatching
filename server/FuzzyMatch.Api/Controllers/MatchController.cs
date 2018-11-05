@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FuzzyMatch.Api.Handlers.Matches;
 using FuzzyMatch.Api.Models;
@@ -19,7 +20,7 @@ namespace FuzzyMatch.Api.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> Create(CreateMatch match)
+        public Task<IActionResult> Create([FromBody] CreateMatch match)
         {
             return _mediator.Try(match)
                 .OnSuccess(payload => Ok())
@@ -32,6 +33,16 @@ namespace FuzzyMatch.Api.Controllers
         {
             return _mediator.Try(new GetAll<Match>())
                 .OnSuccess(payload => Json(payload.Select(MatchSummary.FromMatch)))
+                .OnFailure(result => BadRequest())
+                .Send();
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public Task<IActionResult> Delete(Int32 id)
+        {
+            return _mediator.Try(new Delete<Match>(id))
+                .OnSuccess(payload => Accepted())
                 .OnFailure(result => BadRequest())
                 .Send();
         }
