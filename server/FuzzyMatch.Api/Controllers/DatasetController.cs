@@ -40,9 +40,9 @@ namespace FuzzyMatch.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public Task<IActionResult> Get()
         {
-            return await _mediator
+            return _mediator
                 .Try(new GetAll<Dataset>())
                 .OnSuccess(Json)
                 .OnFailure(result => BadRequest())
@@ -51,9 +51,9 @@ namespace FuzzyMatch.Api.Controllers
 
         [HttpGet]
         [Route("{id}/file")]
-        public async Task<IActionResult> GetFile(Int32 id)
+        public Task<IActionResult> GetFile(Int32 id)
         {
-            return await _mediator
+            return _mediator
                 .Try(new GetDatasetFile(id))
                 .OnSuccess(file => File(file.Contents, "text/plain", file.Name))
                 .OnFailure(result => BadRequest())
@@ -62,9 +62,9 @@ namespace FuzzyMatch.Api.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> Delete(Int32 id)
+        public Task<IActionResult> Delete(Int32 id)
         {
-            return await _mediator
+            return _mediator
                 .Try(new Delete<Dataset>(id))
                 .OnSuccess(payload => Accepted())
                 .OnFailure(result => BadRequest())
