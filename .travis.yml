@@ -9,8 +9,10 @@ jobs:
       script:
         - docker-compose build
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-        - docker tag fuzzy $DOCKER_USER/fuzzy
-        - docker push $DOCKER_USER/fuzzy
+        - docker tag fuzzy-api $DOCKER_USER/fuzzy-api
+        - docker push $DOCKER_USER/fuzzy-api
+        - docker tag fuzzy-worker $DOCKER_USER/fuzzy-worker
+        - docker push $DOCKER_USER/fuzzy-worker
 
 notifications:
   slack: fuzzy-matching:kyPay6TFOQrTMffKJRy6FoAZ
