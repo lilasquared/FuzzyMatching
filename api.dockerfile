@@ -1,8 +1,8 @@
 FROM microsoft/dotnet:2.1-sdk AS server
 WORKDIR /src
 COPY server/ .
-RUN dotnet restore FuzzyMatch.Api/FuzzyMatch.Api.csproj
-RUN dotnet publish FuzzyMatch.Api/FuzzyMatch.Api.csproj --output /build/ --configuration Release
+RUN dotnet restore
+RUN dotnet publish --output /build/ --configuration Release
 
 FROM mhart/alpine-node AS client
 WORKDIR /src

@@ -5,16 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="StructureMap" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LiteDB">
-      <HintPath>..\..\..\..\Users\aaron\.nuget\packages\litedb\4.1.4\lib\netstandard2.0\LiteDB.dll</HintPath>
-    </Reference>
-    <Reference Include="StructureMap">
-      <HintPath>..\..\..\..\Users\aaron\.nuget\packages\structuremap\4.7.0\lib\netstandard2.0\StructureMap.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
   </ItemGroup>
 
 </Project>

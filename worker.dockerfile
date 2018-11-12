@@ -4,17 +4,9 @@ COPY server/ .
 RUN dotnet restore
 RUN dotnet publish --output /build/ --configuration Release
 
-FROM mhart/alpine-node AS client
-WORKDIR /src
-COPY client/ .
-RUN npm install -g yarn
-RUN yarn && yarn build
-
 FROM microsoft/dotnet:2.1-aspnetcore-runtime
 WORKDIR /opt
-EXPOSE 80
 
 COPY --from=server /build .
-COPY --from=client /src/build /opt/wwwroot
 
-ENTRYPOINT ["dotnet", "FuzzyMatch.Api.dll"]
+ENTRYPOINT ["dotnet", "FuzzyMatch.Worker.dll"]

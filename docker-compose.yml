@@ -1,15 +1,28 @@
 version: "3"
 services:
   app:
-    image: fuzzy
+    image: fuzzy-api
     build:
       context: ./
+      dockerfile: api.dockerfile
     ports:
       - "80:80"
     volumes:
       - fuzzy-db:/data
     environment:
       - DB_PATH=/data/data.db
+      - QUEUE_PATH=/data/queue.db
+
+  worker:
+    image: fuzzy-worker
+    build:
+      context: ./
+      dockerfile: worker.dockerfile
+    volumes:
+      - fuzzy-db:/data
+    environment:
+      - DB_PATH=/data/data.db
+      - QUEUE_PATH=/data/queue.db
 
 volumes:
   fuzzy-db: {}
