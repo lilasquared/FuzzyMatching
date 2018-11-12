@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Models;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Configuration;
 using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
@@ -10,18 +10,18 @@ namespace FuzzyMatch.Api.Handlers.Datasets
 {
     public class DeleteDatasetHandler : IRequestHandler<Delete<Dataset>, IResult<Unit>>
     {
-        private readonly DatabaseOptions _dbOptions;
+        private readonly LiteDatabaseProvider _provider;
 
-        public DeleteDatasetHandler(DatabaseOptions dbOptions)
+        public DeleteDatasetHandler(LiteDatabaseProvider provider)
         {
-            _dbOptions = dbOptions;
+            _provider = provider;
         }
 
         public Task<IResult<Unit>> Handle(Delete<Dataset> request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = new LiteDB.LiteDatabase(_dbOptions.Path))
+                using (var db = _provider(DataContext.Data))
                 {
                     var dataset = db.GetCollection<Dataset>().FindById(request.Id);
 

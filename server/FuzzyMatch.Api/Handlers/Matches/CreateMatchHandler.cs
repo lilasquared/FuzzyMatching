@@ -1,35 +1,35 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Models;
-using LiteDB;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Appends;
+using FuzzyMatch.Core.Configuration;
 using MediatR;
 using MediatR.CQRS;
 
 namespace FuzzyMatch.Api.Handlers.Matches
 {
-    public class CreateMatchHandler : IRequestHandler<CreateMatch, IResult<Match>>
+    public class CreateMatchHandler : IRequestHandler<CreateMatch, IResult<Append>>
     {
-        private readonly DatabaseOptions _dbOptions;
+        private readonly LiteDatabaseProvider _provider;
 
-        public CreateMatchHandler(DatabaseOptions dbOptions)
+        public CreateMatchHandler(LiteDatabaseProvider provider)
         {
-            _dbOptions = dbOptions;
+            _provider = provider;
         }
 
-        public Task<IResult<Match>> Handle(CreateMatch request, CancellationToken cancellationToken)
+        public Task<IResult<Append>> Handle(CreateMatch request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = new LiteDatabase(_dbOptions.Path))
+                using (var db = _provider(DataContext.Data))
                 {
-                    var match = new Match
+                    var match = new Append
                     {
                         SourceId = request.SourceId,
                         LookupId = request.LookupId,
                         Threshold = request.Threshold
                     };
-                    db.GetCollection<Match>().Insert(match);
+                    db.GetCollection<Append>().Insert(match);
                     return Result.Success(match);
                 }
             }, cancellationToken);

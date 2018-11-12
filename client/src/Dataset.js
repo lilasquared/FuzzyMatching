@@ -24,20 +24,20 @@ export default function Dataset(props) {
       <td>{id}</td>
       <td>{name}</td>
       <td>{fileName}</td>
-      <th className="text-right">
+      <th className="text-right text-nowrap">
         <IconButton
-          size="xsmall"
+          size="sm"
           type="info"
           title="Download File"
-          icon="download-alt"
+          icon="download"
           onClick={downloadFile(id)}
         />
         &nbsp;
         <IconButton
-          size="xsmall"
+          size="sm"
           type="danger"
           title="Delete Dataset"
-          icon="remove"
+          icon="trash"
           onClick={handleDelete}
         />
       </th>

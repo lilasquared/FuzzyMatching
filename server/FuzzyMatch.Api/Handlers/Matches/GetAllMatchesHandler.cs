@@ -1,11 +1,12 @@
-﻿using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Handlers.Generic;
-using FuzzyMatch.Api.Models;
+﻿using FuzzyMatch.Api.Handlers.Generic;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Appends;
+using FuzzyMatch.Core.Configuration;
 
 namespace FuzzyMatch.Api.Handlers.Matches
 {
-    public class GetAllMatchesHandler : GetAllHandler<Match>
+    public class GetAllMatchesHandler : GetAllHandler<Append>
     {
-        public GetAllMatchesHandler(DatabaseOptions dbOptions) : base(dbOptions) { }
+        public GetAllMatchesHandler(LiteDatabaseProvider provider) : base(provider) { }
     }
 }

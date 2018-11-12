@@ -1,9 +1,11 @@
-import React, { Component } from "react"
-
-class Home extends Component {
-  render() {
-    return <h1>Home</h1>
-  }
+import React from "react"
+import { Container } from "reactstrap"
+function Home() {
+  return (
+    <Container>
+      <h1>Home</h1>
+    </Container>
+  )
 }
 
 export default Home

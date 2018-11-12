@@ -1,42 +1,17 @@
 import React from "react"
-import moment from "moment"
-import { Panel, Table } from "react-bootstrap"
-import IconButton from "./IconButton"
+import { Table } from "reactstrap"
+import Append from "./Append"
 
 export default function StoredMatches(props) {
   const { matches, handleDelete } = props
 
   const matchList = matches.map(x => (
-    <tr key={x.id}>
-      <td>{x.id}</td>
-      <td>{x.sourceId}</td>
-      <td>{x.lookupId}</td>
-      <td>{x.threshold}</td>
-      <td>{new moment(x.createdAt).fromNow()}</td>
-      <td>{x.status}</td>
-      <td className="text-right">
-        <IconButton
-          size="xsmall"
-          type="success"
-          title="Process Match"
-          icon="play"
-        />
-        &nbsp;
-        <IconButton
-          size="xsmall"
-          type="danger"
-          title="Delete Match"
-          icon="remove"
-          onClick={handleDelete(x.id)}
-        />
-      </td>
-    </tr>
+    <Append key={x.id} {...x} handleDelete={handleDelete} />
   ))
 
   return (
-    <Panel>
-      <Panel.Heading>Stored Matches</Panel.Heading>
-      <Table condensed>
+    <>
+      <Table size="sm">
         <thead>
           <tr>
             <th>#</th>
@@ -50,6 +25,6 @@ export default function StoredMatches(props) {
         </thead>
         <tbody>{matchList}</tbody>
       </Table>
-    </Panel>
+    </>
   )
 }

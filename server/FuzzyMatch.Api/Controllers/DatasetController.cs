@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FuzzyMatch.Api.Handlers.Datasets;
-using FuzzyMatch.Api.Models;
+using FuzzyMatch.Core;
 using MediatR;
 using MediatR.CQRS.Requests;
 using Microsoft.AspNetCore.Http;

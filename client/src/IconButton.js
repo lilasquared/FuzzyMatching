@@ -1,15 +1,16 @@
 import React from "react"
-import { Button, Glyphicon } from "react-bootstrap"
+import { Button } from "reactstrap"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export default function IconButton(props) {
   return (
     <Button
-      bsSize={props.size}
-      bsStyle={props.type}
+      size={props.size}
+      color={props.type}
       title={props.title}
       onClick={props.onClick}
     >
-      <Glyphicon glyph={props.icon} />
+      <FontAwesomeIcon icon={props.icon} />
     </Button>
   )
 }

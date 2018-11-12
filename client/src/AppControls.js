@@ -1,13 +1,6 @@
 import React from "react"
-import {
-  Button,
-  Panel,
-  Form,
-  FormGroup,
-  FormControl,
-  ControlLabel,
-} from "react-bootstrap"
 import axios from "axios"
+import { Button, Form, FormGroup, Label, Input, Row, Col } from "reactstrap"
 
 export default function AppControls(props) {
   const { datasets, onSuccess } = props
@@ -22,7 +15,7 @@ export default function AppControls(props) {
     e.preventDefault()
 
     axios
-      .post("/api/matches", {
+      .post("/api/appends", {
         sourceId: e.target.source.value,
         lookupId: e.target.lookup.value,
         threshold: e.target.threshold.value,
@@ -34,43 +27,55 @@ export default function AppControls(props) {
   const disableSubmit = datasets.length === 0
 
   return (
-    <Panel>
-      <Panel.Heading>Create a Match</Panel.Heading>
-      <Panel.Body>
-        <Form onSubmit={onSubmit}>
-          <FormGroup controlId="source">
-            <ControlLabel>Choose a Source Dataset</ControlLabel>
-            <FormControl componentClass="select" required>
-              {options}
-            </FormControl>
-          </FormGroup>
-          <FormGroup controlId="lookup">
-            <ControlLabel>Choose a Lookup Dataset</ControlLabel>
-            <FormControl componentClass="select" required>
-              {options}
-            </FormControl>
-          </FormGroup>
-          <FormGroup controlId="threshold">
-            <ControlLabel>Choose a Threshold</ControlLabel>
-            <FormControl
-              type="number"
-              step="0.01"
-              min="0.01"
-              max="1.00"
-              defaultValue="0.75"
-              required
-            />
-          </FormGroup>
-          <Button
-            type="submit"
-            bsStyle="primary"
-            block
-            disabled={disableSubmit}
-          >
-            Create Match
-          </Button>
-        </Form>
-      </Panel.Body>
-    </Panel>
+    <>
+      <Row>
+        <Col sm={12}>
+          <h2>Create an Append</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col
+          sm={{
+            size: 6,
+            offset: 3,
+          }}
+        >
+          <Form onSubmit={onSubmit}>
+            <FormGroup>
+              <Label>Choose a Source Dataset</Label>
+              <Input type="select" name="source" required>
+                {options}
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label>Choose a Lookup Dataset</Label>
+              <Input type="select" name="lookup" required>
+                {options}
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label>Choose a Threshold</Label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0.01"
+                max="1.00"
+                defaultValue="0.75"
+                name="threshold"
+                required
+              />
+            </FormGroup>
+            <Button
+              type="submit"
+              color="primary"
+              block
+              disabled={disableSubmit}
+            >
+              Create Append
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </>
   )
 }

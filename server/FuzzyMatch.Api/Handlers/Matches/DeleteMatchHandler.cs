@@ -1,11 +1,12 @@
-﻿using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Handlers.Generic;
-using FuzzyMatch.Api.Models;
+﻿using FuzzyMatch.Api.Handlers.Generic;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Appends;
+using FuzzyMatch.Core.Configuration;
 
 namespace FuzzyMatch.Api.Handlers.Matches
 {
-    public class DeleteMatchHandler : DeleteHandler<Match>
+    public class DeleteMatchHandler : DeleteHandler<Append>
     {
-        public DeleteMatchHandler(DatabaseOptions dbOptions) : base(dbOptions) { }
+        public DeleteMatchHandler(LiteDatabaseProvider provider) : base(provider) { }
     }
 }

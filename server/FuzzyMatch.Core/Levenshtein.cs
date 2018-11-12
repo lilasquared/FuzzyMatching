@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FuzzyMatch.Api.Handlers.Matches
+namespace FuzzyMatch.Core
 {
     public class Levenshtein
     {

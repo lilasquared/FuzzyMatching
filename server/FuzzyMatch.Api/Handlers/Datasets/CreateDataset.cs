@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using FuzzyMatch.Api.Models;
+using FuzzyMatch.Core;
 using MediatR.CQRS;
 
 namespace FuzzyMatch.Api.Handlers.Datasets

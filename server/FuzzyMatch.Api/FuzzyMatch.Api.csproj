@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Configuration\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FuzzyMatch.Core\FuzzyMatch.Core.csproj" />
     <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
     <ProjectReference Include="..\QuickApi\QuickApi.csproj" />
   </ItemGroup>

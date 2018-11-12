@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MediatR.CQRS\MediatR.CQRS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LiteDB">
+      <HintPath>..\..\..\..\Users\aaron\.nuget\packages\litedb\4.1.4\lib\netstandard2.0\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\..\..\Users\aaron\.nuget\packages\structuremap\4.7.0\lib\netstandard2.0\StructureMap.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

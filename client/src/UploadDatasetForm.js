@@ -1,60 +1,41 @@
-import React, { Component } from "react"
-import {
-  Panel,
-  Form,
-  FormGroup,
-  FormControl,
-  Button,
-  Alert,
-} from "react-bootstrap"
-import { post } from "axios"
+import React, { useState } from "react"
+import axios from "axios"
+import { Button, Alert, Form, FormGroup, Input } from "reactstrap"
 
-class CreateDataset extends Component {
-  state = {
-    error: "",
-  }
+export default function CreateDataset(props) {
+  const [error, setError] = useState("")
 
-  onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault()
-    this.setState({ error: "" })
+    setError("")
     const url = "/api/datasets"
     const formData = new FormData()
     formData.append("file", e.target.file.files[0])
     formData.append("name", e.target.name.value)
     e.target.reset()
-    post(url, formData).then(this.props.onSuccess, error => {
-      this.setState({ error: error.response.data })
-    })
+    try {
+      await axios.post(url, formData)
+      props.onSuccess()
+    } catch (error) {
+      setError(error.response.data)
+    }
   }
 
-  render() {
-    return (
-      <Panel>
-        <Panel.Heading>Upload Dataset</Panel.Heading>
-        <Panel.Body>
-          {this.state.error && (
-            <Alert bsStyle="danger">{this.state.error}</Alert>
-          )}
-          <Form onSubmit={this.onSubmit}>
-            <FormGroup>
-              <FormControl
-                type="text"
-                name="name"
-                placeholder="Dataset Name"
-                required
-              />
-            </FormGroup>
-            <FormGroup>
-              <FormControl type="file" name="file" required />
-            </FormGroup>
-            <Button type="submit" bsStyle="primary" block>
-              Upload
-            </Button>
-          </Form>
-        </Panel.Body>
-      </Panel>
-    )
-  }
+  return (
+    <>
+      <h2>Upload Dataset</h2>
+      {error && <Alert color="danger">{error}</Alert>}
+      <Form onSubmit={onSubmit}>
+        <FormGroup>
+          <Input type="text" name="name" placeholder="Dataset Name" required />
+        </FormGroup>
+        <FormGroup>
+          <Input type="file" name="file" required />
+        </FormGroup>
+        <Button type="submit" color="primary" block>
+          Upload
+        </Button>
+      </Form>
+    </>
+  )
 }
-
-export default CreateDataset

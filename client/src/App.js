@@ -1,53 +1,41 @@
 import React from "react"
-import { usePolling, useResource, useDidMount } from "./hooks"
-import axios from "axios"
-import { Grid, Row, Col } from "react-bootstrap"
+import { Route } from "react-router"
+import { useResource } from "./hooks"
+import { Container, Nav, NavItem } from "reactstrap"
 import AppControls from "./AppControls"
-import UploadDatasetForm from "./UploadDatasetForm"
-import StoredDatasets from "./StoredDatasets"
-import StoredMatches from "./StoredMatches"
+import MyLink from "./components/MyLink"
+import Datasets from "./Datasets"
+import Appends from "./Appends"
 
 export default function App() {
-  const [datasets, refreshDatasets, , tokenSource] = useResource(
-    "/api/datasets"
-  )
-
-  const [matches, refreshMatches] = usePolling("/api/matches", 5000)
-  useDidMount(() => {
-    refreshDatasets().catch(() => {
-      console.log("cancel useResource")
-    })
-    return () => tokenSource.cancel()
-  })
-
-  const deleteDataset = id => () => {
-    return axios.delete(`/api/datasets/${id}`).then(refreshDatasets)
-  }
-
-  const deleteMatch = id => () => {
-    return axios.delete(`/api/matches/${id}`).then(refreshMatches)
-  }
+  const [datasets, refreshDatasets] = useResource("/api/datasets")
 
   return (
-    <Grid>
-      <Row>
-        <Col sm={12} md={6}>
-          <Row>
-            <Col sm={12}>
-              <AppControls datasets={datasets} onSuccess={refreshMatches} />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={12}>
-              <StoredMatches matches={matches} handleDelete={deleteMatch} />
-            </Col>
-          </Row>
-        </Col>
-        <Col sm={12} md={6}>
-          <UploadDatasetForm onSuccess={refreshDatasets} />
-          <StoredDatasets datasets={datasets} deleteDataset={deleteDataset} />
-        </Col>
-      </Row>
-    </Grid>
+    <Container>
+      <br />
+      <Nav tabs>
+        <NavItem>
+          <MyLink to="/app/controls">Controls</MyLink>
+        </NavItem>
+        <NavItem>
+          <MyLink to="/app/datasets">Datasets</MyLink>
+        </NavItem>
+        <NavItem>
+          <MyLink to="/app/appends">Appends</MyLink>
+        </NavItem>
+      </Nav>
+      <br />
+      <Route
+        path="/app/controls"
+        render={() => <AppControls datasets={datasets} />}
+      />
+      <Route
+        path="/app/datasets"
+        render={() => (
+          <Datasets datasets={datasets} refreshDatasets={refreshDatasets} />
+        )}
+      />
+      <Route path="/app/appends" component={Appends} />
+    </Container>
   )
 }

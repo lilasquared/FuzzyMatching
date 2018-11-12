@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using LiteDB;
 
-namespace FuzzyMatch.Api.Handlers.Matches
+namespace FuzzyMatch.Core
 {
     public static class LiteFileStreamExtensions
     {

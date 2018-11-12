@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using FuzzyMatch.Api.Abstracts;
-using FuzzyMatch.Api.Configuration;
 using FuzzyMatch.Api.Handlers.Generic;
-using FuzzyMatch.Api.Models;
 using FuzzyMatch.Api.Providers;
-using MediatR;
-using MediatR.CQRS;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -54,29 +52,9 @@ namespace FuzzyMatch.Api
                 .AddQuickApi(typeof(BaseController<>), types)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var container = new Container();
+            var container = new Container(new DefaultRegistry());
             container.Configure(config =>
             {
-                config.Scan(scan =>
-                {
-                    scan.AssembliesFromApplicationBaseDirectory();
-                    scan.WithDefaultConventions();
-                    scan.ConnectImplementationsToTypesClosing(typeof(IRequestHandler<>));
-                    scan.ConnectImplementationsToTypesClosing(typeof(IRequestHandler<,>));
-                });
-
-                config.For<IMediator>().Use<Mediator>();
-                config.For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
-                config.For(typeof(IPipelineBehavior<,>)).Add(typeof(ExceptionHandlerBehavior<,>));
-
-                config
-                    .For<DatabaseOptions>()
-                    .Use(x => new DatabaseOptions
-                    {
-                        Path = Environment.GetEnvironmentVariable("DB_PATH")
-                    })
-                    .Singleton();
-
                 config.AddGenericHandlers(types, new []
                 {
                     typeof(GetAllHandler<>),

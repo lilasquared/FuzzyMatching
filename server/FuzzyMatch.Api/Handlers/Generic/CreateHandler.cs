@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Configuration;
+using FuzzyMatch.Core.Configuration;
 using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
@@ -9,18 +9,18 @@ namespace FuzzyMatch.Api.Handlers.Generic
 {
     public class CreateHandler<TModel> : IRequestHandler<Create<TModel>, IResult<TModel>>
     {
-        private readonly DatabaseOptions _dbOptions;
+        private readonly LiteDatabaseProvider _provider;
 
-        public CreateHandler(DatabaseOptions dbOptions)
+        public CreateHandler(LiteDatabaseProvider provider)
         {
-            _dbOptions = dbOptions;
+            _provider = provider;
         }
 
         public Task<IResult<TModel>> Handle(Create<TModel> request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = new LiteDB.LiteDatabase(_dbOptions.Path))
+                using (var db = _provider(DataContext.Data))
                 {
                     db.GetCollection<TModel>().Insert(request.Model);
                     return Result.Success(request.Model);

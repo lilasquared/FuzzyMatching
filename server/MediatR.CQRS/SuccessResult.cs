@@ -17,4 +17,9 @@ namespace MediatR.CQRS
             Payload = payload;
         }
     }
+
+    public class SuccessResult : SuccessResult<Unit>
+    {
+        public SuccessResult() : base(Unit.Value) { }
+    }
 }

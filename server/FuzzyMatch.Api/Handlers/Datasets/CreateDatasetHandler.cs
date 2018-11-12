@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Models;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Configuration;
 using MediatR;
 using MediatR.CQRS;
 
@@ -9,18 +9,18 @@ namespace FuzzyMatch.Api.Handlers.Datasets
 {
     public class CreateDatasetHandler : IRequestHandler<CreateDataset, IResult<Dataset>>
     {
-        private readonly DatabaseOptions _dbOptions;
+        private readonly LiteDatabaseProvider _provider;
 
-        public CreateDatasetHandler(DatabaseOptions dbOptions)
+        public CreateDatasetHandler(LiteDatabaseProvider provider)
         {
-            _dbOptions = dbOptions;
+            _provider = provider;
         }
 
         public Task<IResult<Dataset>> Handle(CreateDataset request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = new LiteDB.LiteDatabase(_dbOptions.Path))
+                using (var db = _provider(DataContext.Data))
                 {
                     var dataset = new Dataset
                     {

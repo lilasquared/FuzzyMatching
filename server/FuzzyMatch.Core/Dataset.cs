@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace FuzzyMatch.Api.Models
+namespace FuzzyMatch.Core
 {
     public class Dataset
     {

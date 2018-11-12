@@ -1,10 +1,11 @@
 ﻿using System;
-using FuzzyMatch.Api.Models;
+using FuzzyMatch.Core;
+using FuzzyMatch.Core.Appends;
 using MediatR.CQRS;
 
 namespace FuzzyMatch.Api.Handlers.Matches
 {
-    public class CreateMatch : IAction<Match>
+    public class CreateMatch : IAction<Append>
     {
         public Int32 SourceId { get; set; }
         public Int32 LookupId { get; set; }

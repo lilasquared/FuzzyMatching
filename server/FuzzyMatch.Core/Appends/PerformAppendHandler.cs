@@ -2,52 +2,58 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Api.Configuration;
-using FuzzyMatch.Api.Models;
-using LiteDB;
+using FuzzyMatch.Core.Configuration;
 using MediatR;
 using MediatR.CQRS;
 
-namespace FuzzyMatch.Api.Handlers.Matches
+namespace FuzzyMatch.Core.Appends
 {
-    public class PerformMatchHandler : IRequestHandler<PerformMatch, IResult<Unit>>
+    public class PerformAppendHandler : IRequestHandler<PerformAppend, IResult<Unit>>
     {
-        private readonly DatabaseOptions _dbOptions;
+        private readonly LiteDatabaseProvider _provider;
 
-        public PerformMatchHandler(DatabaseOptions dbOptions)
+        public PerformAppendHandler(LiteDatabaseProvider provider)
         {
-            _dbOptions = dbOptions;
+            _provider = provider;
         }
 
-        public Task<IResult<Unit>> Handle(PerformMatch request, CancellationToken cancellationToken)
+        public Task<IResult<Unit>> Handle(PerformAppend request, CancellationToken cancellationToken)
         {
-            var levenshtein = new Levenshtein();
-            using (var db = new LiteDatabase(_dbOptions.Path))
+            using (var db = _provider(DataContext.Data))
             {
-                var matches = db.GetCollection<Match>();
-                var match = matches.FindById(request.Id);
+                var matches = db.GetCollection<Append>();
+                var match = matches.FindById(request.MatchId);
 
-                match.Status = MatchStatus.Processing;
+                if (match == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                match.Start();
                 matches.Update(match);
 
+                var levenshtein = new Levenshtein();
                 var source = GetDataset(match.SourceId);
                 var lookup = GetDataset(match.LookupId);
 
                 var sourceData = db.FileStorage.OpenRead(source.FileId).ReadLines().ToList();
                 var lookupData = db.FileStorage.OpenRead(lookup.FileId).ReadLines().ToList();
 
-                Int32 sourceRecordId = 0, lookupRecordId = 0;
+                var sourceRecordId = 0;
                 foreach (var sourceRecord in sourceData)
                 {
+                    var lookupRecordId = 0;
                     foreach (var lookupRecord in lookupData)
                     {
                         var ratio = levenshtein.GetRatio(sourceRecord, lookupRecord);
                         if (ratio >= match.Threshold)
                         {
-                            match.Results.Add(new MatchResult
+                            match.Results.Add(new AppendResult
                             {
                                 SourceRecordId = sourceRecordId,
+                                SourceRecord = sourceRecord,
                                 LookupRecordId = lookupRecordId,
+                                LookupRecord = lookupRecord,
                                 Ratio = ratio
                             });
                         }
@@ -56,9 +62,11 @@ namespace FuzzyMatch.Api.Handlers.Matches
                     }
 
                     sourceRecordId++;
+                    match.Progress = sourceRecordId * 100.0 / sourceData.Count;
+                    matches.Update(match);
                 }
 
-                match.Status = MatchStatus.Completed;
+                match.Finish();
                 matches.Update(match);
             }
 
@@ -67,7 +75,7 @@ namespace FuzzyMatch.Api.Handlers.Matches
 
         private Dataset GetDataset(Int32 id)
         {
-            using (var db = new LiteDatabase(_dbOptions.Path))
+            using (var db = _provider(DataContext.Data))
             {
                 var dataset = db.GetCollection<Dataset>().FindById(id);
 

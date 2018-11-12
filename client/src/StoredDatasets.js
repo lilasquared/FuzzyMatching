@@ -1,9 +1,9 @@
 import React from "react"
-import { Panel, Table } from "react-bootstrap"
+import { Table } from "reactstrap"
 import Dataset from "./Dataset"
 
 export default function StoredDatasets(props) {
-  const { datasets, datasetsRefreshing, deleteDataset } = props
+  const { datasets, deleteDataset } = props
 
   const datasetList = datasets.map(x => (
     <Dataset
@@ -16,11 +16,8 @@ export default function StoredDatasets(props) {
   ))
 
   return (
-    <Panel>
-      <Panel.Heading>
-        Stored Datasets {datasetsRefreshing && <span>Loading...</span>}
-      </Panel.Heading>
-      <Table condensed>
+    <>
+      <Table>
         <thead>
           <tr>
             <th>#</th>
@@ -31,6 +28,6 @@ export default function StoredDatasets(props) {
         </thead>
         <tbody>{datasetList}</tbody>
       </Table>
-    </Panel>
+    </>
   )
 }

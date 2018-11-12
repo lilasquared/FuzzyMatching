@@ -1,13 +1,5 @@
 import React, { Component } from "react"
-import {
-  Panel,
-  Form,
-  FormGroup,
-  FormControl,
-  ControlLabel,
-  Checkbox,
-  Col,
-} from "react-bootstrap"
+import { Form, FormGroup, Input, Label, Col } from "reactstrap"
 import { toDateInputValue } from "./utils"
 
 class Progress extends Component {
@@ -15,12 +7,8 @@ class Progress extends Component {
     return (
       <>
         <h1>Progress</h1>
-        <Panel>
-          <Panel.Heading>Add Update</Panel.Heading>
-          <Panel.Body>
-            <UpdateForm />
-          </Panel.Body>
-        </Panel>
+        <h3>Add Update</h3>
+        <UpdateForm />
       </>
     )
   }
@@ -42,11 +30,11 @@ class UpdateForm extends Component {
     return (
       <Form horizontal>
         <FormGroup controlId="date">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={Label} sm={2}>
             Date
           </Col>
           <Col sm={10}>
-            <FormControl
+            <Input
               type="date"
               value={this.state.date}
               onChange={this.setInputState("date")}
@@ -54,11 +42,11 @@ class UpdateForm extends Component {
           </Col>
         </FormGroup>
         <FormGroup controlId="title">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={Label} sm={2}>
             Title
           </Col>
           <Col sm={10}>
-            <FormControl
+            <Input
               type="text"
               placeholder="Meaningful Title"
               value={this.state.title}
@@ -67,11 +55,11 @@ class UpdateForm extends Component {
           </Col>
         </FormGroup>
         <FormGroup controlId="description">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={Label} sm={2}>
             Description
           </Col>
           <Col sm={10}>
-            <FormControl
+            <Input
               componentClass="textarea"
               placeholder="Notes or description of the update"
               value={this.state.description}
@@ -80,23 +68,28 @@ class UpdateForm extends Component {
           </Col>
         </FormGroup>
         <FormGroup controlId="participants">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={Label} sm={2}>
             Participant(s)
           </Col>
           <Col sm={10}>
-            <Checkbox>Aaron Roberts</Checkbox>
-            <Checkbox>Chase Wood</Checkbox>
-            <Checkbox>Daniel Childers</Checkbox>
-            <Checkbox>Jonathan Miu</Checkbox>
-            <Checkbox>Lea Nooyen</Checkbox>
+            <Input type="checkbox" />
+            Aaron Roberts
+            <Input type="checkbox" />
+            Chase Wood
+            <Input type="checkbox" />
+            Daniel Childers
+            <Input type="checkbox" />
+            Jonathan Miu
+            <Input type="checkbox" />
+            Lea Nooyen
           </Col>
         </FormGroup>
         <FormGroup controlId="links">
-          <Col componentClass={ControlLabel} sm={2}>
+          <Col componentClass={Label} sm={2}>
             Description
           </Col>
           <Col sm={10}>
-            <FormControl
+            <Input
               componentClass="textarea"
               placeholder="Notes or description of the update"
               value={this.state.description}

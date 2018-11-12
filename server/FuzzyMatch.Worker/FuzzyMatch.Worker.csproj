@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FuzzyMatch.Core\FuzzyMatch.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\..\..\Users\aaron\.nuget\packages\structuremap\4.7.0\lib\netstandard2.0\StructureMap.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
