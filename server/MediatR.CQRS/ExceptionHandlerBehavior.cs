@@ -15,6 +15,8 @@ namespace MediatR.CQRS
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
                 var resultType = typeof(TResponse);
 
                 if (resultType.IsGenericType)
