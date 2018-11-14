@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,58 +20,70 @@ namespace FuzzyMatch.Core.Appends
 
         public Task<IResult<Unit>> Handle(PerformAppend request, CancellationToken cancellationToken)
         {
-            using (var db = _provider(DataContext.Data))
+            var match = GetAppend(request.MatchId);
+
+            if (match == null)
             {
-                var matches = db.GetCollection<Append>();
-                var match = matches.FindById(request.MatchId);
-
-                if (match == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                match.Start();
-                matches.Update(match);
-
-                var levenshtein = new Levenshtein();
-                var source = GetDataset(match.SourceId);
-                var lookup = GetDataset(match.LookupId);
-
-                var sourceData = db.FileStorage.OpenRead(source.FileId).ReadLines().ToList();
-                var lookupData = db.FileStorage.OpenRead(lookup.FileId).ReadLines().ToList();
-
-                var sourceRecordId = 0;
-                foreach (var sourceRecord in sourceData)
-                {
-                    var lookupRecordId = 0;
-                    foreach (var lookupRecord in lookupData)
-                    {
-                        var ratio = levenshtein.GetRatio(sourceRecord, lookupRecord);
-                        if (ratio >= match.Threshold)
-                        {
-                            match.Results.Add(new AppendResult
-                            {
-                                SourceRecordId = sourceRecordId,
-                                SourceRecord = sourceRecord,
-                                LookupRecordId = lookupRecordId,
-                                LookupRecord = lookupRecord,
-                                Ratio = ratio
-                            });
-                        }
-
-                        lookupRecordId++;
-                    }
-
-                    sourceRecordId++;
-                    match.Progress = sourceRecordId * 100.0 / sourceData.Count;
-                    matches.Update(match);
-                }
-
-                match.Finish();
-                matches.Update(match);
+                throw new InvalidOperationException();
             }
 
+            match.Start();
+            UpdateAppend(match);
+
+            var levenshtein = new Levenshtein();
+            var source = GetDataset(match.SourceId);
+            var lookup = GetDataset(match.LookupId);
+
+            var sourceData = GetData(source.FileId).ToArray();
+            var lookupData = GetData(lookup.FileId).ToArray();
+
+            var sourceRecordId = 0;
+            foreach (var sourceRecord in sourceData)
+            {
+                var lookupRecordId = 0;
+                foreach (var lookupRecord in lookupData)
+                {
+                    var ratio = levenshtein.GetRatio(sourceRecord, lookupRecord);
+                    if (ratio >= match.Threshold)
+                    {
+                        match.Results.Add(new AppendResult
+                        {
+                            SourceRecordId = sourceRecordId,
+                            SourceRecord = sourceRecord,
+                            LookupRecordId = lookupRecordId,
+                            LookupRecord = lookupRecord,
+                            Ratio = ratio
+                        });
+                    }
+
+                    lookupRecordId++;
+                }
+
+                sourceRecordId++;
+                match.Progress = sourceRecordId * 100.0 / sourceData.Length;
+                UpdateAppend(match);
+            }
+
+            match.Finish();
+            UpdateAppend(match);
+
             return Task.FromResult(Result.Success());
+        }
+
+        private void UpdateAppend(Append append)
+        {
+            using (var db = _provider(DataContext.Data))
+            {
+                db.GetCollection<Append>().Update(append);
+            }
+        }
+
+        private Append GetAppend(Int32 appendId)
+        {
+            using (var db = _provider(DataContext.Data))
+            {
+                return db.GetCollection<Append>().FindById(appendId);
+            }
         }
 
         private Dataset GetDataset(Int32 id)
@@ -85,6 +98,14 @@ namespace FuzzyMatch.Core.Appends
                 }
 
                 return dataset;
+            }
+        }
+
+        private IEnumerable<String> GetData(String fileId)
+        {
+            using (var db = _provider(DataContext.Data))
+            {
+                return db.FileStorage.OpenRead(fileId).ReadLines().ToArray();
             }
         }
     }
