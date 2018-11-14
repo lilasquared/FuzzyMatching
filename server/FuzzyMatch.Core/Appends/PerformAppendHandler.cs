@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FuzzyMatch.Core.Configuration;
+using LiteDB;
 using MediatR;
 using MediatR.CQRS;
 
@@ -37,58 +38,61 @@ namespace FuzzyMatch.Core.Appends
             var sourceData = GetData(source.FileId).ToArray();
             var lookupData = GetData(lookup.FileId).ToArray();
 
-            var sourceRecordId = 0;
-            foreach (var sourceRecord in sourceData)
+            try
             {
-                var lookupRecordId = 0;
-                foreach (var lookupRecord in lookupData)
+                var sourceRecordId = 0;
+                foreach (var sourceRecord in sourceData)
                 {
-                    var ratio = levenshtein.GetRatio(sourceRecord, lookupRecord);
-                    if (ratio >= match.Threshold)
+                    var lookupRecordId = 0;
+                    foreach (var lookupRecord in lookupData)
                     {
-                        match.Results.Add(new AppendResult
+                        var ratio = levenshtein.GetRatio(sourceRecord, lookupRecord);
+                        if (ratio >= match.Threshold)
                         {
-                            SourceRecordId = sourceRecordId,
-                            SourceRecord = sourceRecord,
-                            LookupRecordId = lookupRecordId,
-                            LookupRecord = lookupRecord,
-                            Ratio = ratio
-                        });
+                            match.Results.Add(new AppendResult
+                            {
+                                SourceRecordId = sourceRecordId,
+                                SourceRecord = sourceRecord,
+                                LookupRecordId = lookupRecordId,
+                                LookupRecord = lookupRecord,
+                                Ratio = ratio
+                            });
+                        }
+
+                        lookupRecordId++;
                     }
 
-                    lookupRecordId++;
+                    sourceRecordId++;
+                    match.Progress = sourceRecordId * 100.0 / sourceData.Length;
+                    UpdateAppend(match);
                 }
 
-                sourceRecordId++;
-                match.Progress = sourceRecordId * 100.0 / sourceData.Length;
+                match.Finish();
                 UpdateAppend(match);
             }
-
-            match.Finish();
-            UpdateAppend(match);
+            catch (Exception ex)
+            {
+                match.Error(ex);
+                UpdateAppend(match);
+                throw;
+            }
 
             return Task.FromResult(Result.Success());
         }
 
         private void UpdateAppend(Append append)
         {
-            using (var db = _provider(DataContext.Data))
-            {
-                db.GetCollection<Append>().Update(append);
-            }
+            UnitOfWorkCommand(db => db.GetCollection<Append>().Update(append));
         }
 
         private Append GetAppend(Int32 appendId)
         {
-            using (var db = _provider(DataContext.Data))
-            {
-                return db.GetCollection<Append>().FindById(appendId);
-            }
+            return UnitOfWorkQuery(db => db.GetCollection<Append>().FindById(appendId));
         }
 
         private Dataset GetDataset(Int32 id)
         {
-            using (var db = _provider(DataContext.Data))
+            return UnitOfWorkQuery(db =>
             {
                 var dataset = db.GetCollection<Dataset>().FindById(id);
 
@@ -98,14 +102,29 @@ namespace FuzzyMatch.Core.Appends
                 }
 
                 return dataset;
-            }
+            });
         }
 
         private IEnumerable<String> GetData(String fileId)
         {
+            return UnitOfWorkQuery(db => db.FileStorage.OpenRead(fileId).ReadLines().ToArray());
+        }
+
+        private T UnitOfWorkQuery<T>(Func<LiteDatabase, T> callback)
+        {
             using (var db = _provider(DataContext.Data))
+            using (db.Engine.Locker.Write())
             {
-                return db.FileStorage.OpenRead(fileId).ReadLines().ToArray();
+                return callback(db);
+            }
+        }
+
+        private void UnitOfWorkCommand(Action<LiteDatabase> callback)
+        {
+            using (var db = _provider(DataContext.Data))
+            using (db.Engine.Locker.Write())
+            {
+                callback(db);
             }
         }
     }

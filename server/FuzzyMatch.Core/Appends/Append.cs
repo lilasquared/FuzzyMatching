@@ -14,6 +14,7 @@ namespace FuzzyMatch.Core.Appends
         public DateTime CompletedAt { get; set; }
         public Double Progress { get; set; }
         public AppendStatus Status { get; set; }
+        public String ErrorMessage { get; set; }
         public IList<AppendResult> Results { get; set; }
 
         public Append()
@@ -33,6 +34,13 @@ namespace FuzzyMatch.Core.Appends
         {
             CompletedAt = DateTime.UtcNow;
             Status = AppendStatus.Completed;
+        }
+
+        public void Error(Exception ex)
+        {
+            ErrorMessage = ex.Message + Environment.NewLine + ex.StackTrace;
+            CompletedAt = DateTime.UtcNow;
+            Status = AppendStatus.Failed;
         }
     }
 }
