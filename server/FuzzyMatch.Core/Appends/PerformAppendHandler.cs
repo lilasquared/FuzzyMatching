@@ -113,7 +113,7 @@ namespace FuzzyMatch.Core.Appends
         private T UnitOfWorkQuery<T>(Func<LiteDatabase, T> callback)
         {
             using (var db = _provider(DataContext.Data))
-            using (db.Engine.Locker.Write())
+            using (db.Engine.Locker.Read())
             {
                 return callback(db);
             }
