@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FuzzyMatch.Api.Handlers.Matches;
-using FuzzyMatch.Core;
 using FuzzyMatch.Core.Appends;
 using MediatR;
 using MediatR.CQRS.Requests;

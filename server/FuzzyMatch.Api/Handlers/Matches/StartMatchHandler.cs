@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FuzzyMatch.Core;
 using FuzzyMatch.Core.Appends;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 using MediatR;
 using MediatR.CQRS;
 
@@ -12,9 +12,9 @@ namespace FuzzyMatch.Api.Handlers.Matches
     public class StartMatchHandler : IRequestHandler<StartMatch, IResult<Unit>>
     {
         private readonly IQueueWriter<PerformAppend> _queueWriter;
-        private readonly LiteDatabaseProvider _provider;
+        private readonly DataUnitOfWork _provider;
 
-        public StartMatchHandler(IQueueWriter<PerformAppend> queueWriter, LiteDatabaseProvider provider)
+        public StartMatchHandler(IQueueWriter<PerformAppend> queueWriter, DataUnitOfWork provider)
         {
             _queueWriter = queueWriter;
             _provider = provider;
@@ -22,7 +22,7 @@ namespace FuzzyMatch.Api.Handlers.Matches
 
         public Task<IResult<Unit>> Handle(StartMatch request, CancellationToken cancellationToken)
         {
-            using (var db = _provider(DataContext.Data))
+            _provider.ExecuteCommand(db =>
             {
                 var match = db.GetCollection<Append>().FindById(request.MatchId);
                 if (match == null)
@@ -33,7 +33,7 @@ namespace FuzzyMatch.Api.Handlers.Matches
                 _queueWriter.Enqueue(new PerformAppend {MatchId = request.MatchId}, cancellationToken);
                 match.Status = AppendStatus.Queued;
                 db.GetCollection<Append>().Update(match);
-            }
+            });
 
             return Task.FromResult<IResult<Unit>>(new SuccessResult());
         }

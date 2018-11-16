@@ -1,12 +1,11 @@
 ﻿using FuzzyMatch.Api.Handlers.Generic;
-using FuzzyMatch.Core;
 using FuzzyMatch.Core.Appends;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 
 namespace FuzzyMatch.Api.Handlers.Matches
 {
     public class GetOneMatchHandler : GetOneHandler<Append>
     {
-        public GetOneMatchHandler(LiteDatabaseProvider provider) : base(provider) { }
+        public GetOneMatchHandler(DataUnitOfWork uow) : base(uow) { }
     }
 }

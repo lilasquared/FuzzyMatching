@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Core.Configuration;
-using LiteDB;
+using FuzzyMatch.Core.UoW;
 using MediatR;
 using MediatR.CQRS;
 
@@ -12,11 +11,11 @@ namespace FuzzyMatch.Core.Appends
 {
     public class PerformAppendHandler : IRequestHandler<PerformAppend, IResult<Unit>>
     {
-        private readonly LiteDatabaseProvider _provider;
+        private readonly DataUnitOfWork _uow;
 
-        public PerformAppendHandler(LiteDatabaseProvider provider)
+        public PerformAppendHandler(DataUnitOfWork uow)
         {
-            _provider = provider;
+            _uow = uow;
         }
 
         public Task<IResult<Unit>> Handle(PerformAppend request, CancellationToken cancellationToken)
@@ -82,17 +81,17 @@ namespace FuzzyMatch.Core.Appends
 
         private void UpdateAppend(Append append)
         {
-            UnitOfWorkCommand(db => db.GetCollection<Append>().Update(append));
+            _uow.ExecuteCommand(db => db.GetCollection<Append>().Update(append));
         }
 
         private Append GetAppend(Int32 appendId)
         {
-            return UnitOfWorkQuery(db => db.GetCollection<Append>().FindById(appendId));
+            return _uow.Execute(db => db.GetCollection<Append>().FindById(appendId));
         }
 
         private Dataset GetDataset(Int32 id)
         {
-            return UnitOfWorkQuery(db =>
+            return _uow.Execute(db =>
             {
                 var dataset = db.GetCollection<Dataset>().FindById(id);
 
@@ -107,25 +106,7 @@ namespace FuzzyMatch.Core.Appends
 
         private IEnumerable<String> GetData(String fileId)
         {
-            return UnitOfWorkQuery(db => db.FileStorage.OpenRead(fileId).ReadLines().ToArray());
-        }
-
-        private T UnitOfWorkQuery<T>(Func<LiteDatabase, T> callback)
-        {
-            using (var db = _provider(DataContext.Data))
-            using (db.Engine.Locker.Read())
-            {
-                return callback(db);
-            }
-        }
-
-        private void UnitOfWorkCommand(Action<LiteDatabase> callback)
-        {
-            using (var db = _provider(DataContext.Data))
-            using (db.Engine.Locker.Write())
-            {
-                callback(db);
-            }
+            return _uow.Execute(db => db.FileStorage.OpenRead(fileId).ReadLines().ToArray());
         }
     }
 }

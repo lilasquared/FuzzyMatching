@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 using LiteDB;
 
 namespace FuzzyMatch.Core
@@ -13,53 +13,55 @@ namespace FuzzyMatch.Core
 
     public class LiteDatabaseQueueOptions
     {
-        public TimeSpan PoolingDelay { get; set; }
-        public LiteDatabaseProvider LiteDatabaseProvider { get; set; }
+        public TimeSpan PollingDelay { get; set; }
 
         public LiteDatabaseQueueOptions()
         {
-            PoolingDelay = TimeSpan.FromSeconds(5);
+            PollingDelay = TimeSpan.FromSeconds(5);
         }
     }
 
     public class LiteDatabaseQueue<TMessage> : IQueueReader<TMessage>, IQueueWriter<TMessage>
         where TMessage : IQueueable, new()
     {
-        private readonly LiteDatabaseProvider _provider;
+        private readonly QueueUnitOfWork _uow;
         private readonly LiteDatabaseQueueOptions _options;
 
-        public LiteDatabaseQueue(LiteDatabaseProvider provider, LiteDatabaseQueueOptions options)
+        public LiteDatabaseQueue(QueueUnitOfWork uow, LiteDatabaseQueueOptions options)
         {
-            _provider = provider;
+            _uow = uow;
             _options = options;
         }
 
         public async Task<TMessage> Dequeue(CancellationToken cancellationToken)
         {
-            using (var db = _provider(DataContext.Queue))
+            do
             {
-                var collection = db.GetCollection<TMessage>();
-                do
+                cancellationToken.ThrowIfCancellationRequested();
+                var message = _uow.Execute(db =>
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    var collection = db.GetCollection<TMessage>();
                     var request = collection.FindOne(Query.All());
                     if (request != null)
                     {
                         collection.Delete(request.Id);
-                        return request;
                     }
 
-                    await Task.Delay(_options.PoolingDelay, cancellationToken);
-                } while (true);
-            }
+                    return request;
+                });
+
+                if (message != null)
+                {
+                    return message;
+                }
+
+                await Task.Delay(_options.PollingDelay, cancellationToken);
+            } while (true);
         }
 
         public void Enqueue(TMessage message, CancellationToken cancellationToken)
         {
-            using (var db = _provider(DataContext.Queue))
-            {
-                db.GetCollection<TMessage>().Insert(message);
-            }
+            _uow.ExecuteCommand(db => db.GetCollection<TMessage>().Insert(message));
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using FuzzyMatch.Api.Handlers.Generic;
 using FuzzyMatch.Core;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 
 namespace FuzzyMatch.Api.Handlers.Datasets
 {
     public class GetDatasetsHandler : GetAllHandler<Dataset>
     {
-        public GetDatasetsHandler(LiteDatabaseProvider provider) : base(provider) { }
+        public GetDatasetsHandler(DataUnitOfWork uow) : base(uow) { }
     }
 }

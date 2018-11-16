@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using FuzzyMatch.Core.Appends;
+using FuzzyMatch.Core.UoW;
 using LiteDB;
 using MediatR;
 using MediatR.CQRS;
@@ -8,13 +8,7 @@ using StructureMap;
 
 namespace FuzzyMatch.Core.Configuration
 {
-    public static class DataContext
-    {
-        public static String Data => "data";
-        public static String Queue => "queue";
-    }
-
-    public delegate LiteDatabase LiteDatabaseProvider(String key);
+    public delegate LiteDatabase ContextProvider();
 
     public class DefaultRegistry : Registry
     {
@@ -34,14 +28,15 @@ namespace FuzzyMatch.Core.Configuration
             For<ServiceFactory>().Use<ServiceFactory>(ctx => ctx.GetInstance);
             For(typeof(IPipelineBehavior<,>)).Add(typeof(ExceptionHandlerBehavior<,>));
 
-            var dbs = new Dictionary<String, String>
-            {
-                {DataContext.Data, Environment.GetEnvironmentVariable("DB_PATH")},
-                {DataContext.Queue, Environment.GetEnvironmentVariable("QUEUE_PATH")}
-            };
+            For<DataUnitOfWork>()
+                .Use<DataUnitOfWork>()
+                .Ctor<ContextProvider>()
+                .Is(() => new LiteDatabase(Environment.GetEnvironmentVariable("DB_PATH")));
 
-            For<LiteDatabaseProvider>()
-                .Use<LiteDatabaseProvider>(key => new LiteDatabase(dbs[key]));
+            For<QueueUnitOfWork>()
+                .Use<QueueUnitOfWork>()
+                .Ctor<ContextProvider>()
+                .Is(() => new LiteDatabase(Environment.GetEnvironmentVariable("QUEUE_PATH")));
 
             For<IQueueWriter<PerformAppend>>()
                 .Use<LiteDatabaseQueue<PerformAppend>>();

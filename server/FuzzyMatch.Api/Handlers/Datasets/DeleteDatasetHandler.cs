@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FuzzyMatch.Core;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 using MediatR;
 using MediatR.CQRS;
 using MediatR.CQRS.Requests;
@@ -10,18 +10,18 @@ namespace FuzzyMatch.Api.Handlers.Datasets
 {
     public class DeleteDatasetHandler : IRequestHandler<Delete<Dataset>, IResult<Unit>>
     {
-        private readonly LiteDatabaseProvider _provider;
+        private readonly DataUnitOfWork _uow;
 
-        public DeleteDatasetHandler(LiteDatabaseProvider provider)
+        public DeleteDatasetHandler(DataUnitOfWork uow)
         {
-            _provider = provider;
+            _uow = uow;
         }
 
         public Task<IResult<Unit>> Handle(Delete<Dataset> request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = _provider(DataContext.Data))
+                return _uow.Execute(db =>
                 {
                     var dataset = db.GetCollection<Dataset>().FindById(request.Id);
 
@@ -29,10 +29,11 @@ namespace FuzzyMatch.Api.Handlers.Datasets
                     {
                         db.FileStorage.Delete(dataset.FileId);
                     }
+
                     db.GetCollection<Dataset>().Delete(request.Id);
 
                     return Result.Success();
-                }
+                });
             }, cancellationToken);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using FuzzyMatch.Core;
 using FuzzyMatch.Core.Appends;
 using MediatR.CQRS;
 

@@ -19,9 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickApi", "QuickApi\QuickApi.csproj", "{8451919B-0239-4628-98D6-D9CC03729D9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyMatch.Worker", "FuzzyMatch.Worker\FuzzyMatch.Worker.csproj", "{C0D7EF6E-BF17-449B-ABE1-200539057AFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuzzyMatch.Worker", "FuzzyMatch.Worker\FuzzyMatch.Worker.csproj", "{C0D7EF6E-BF17-449B-ABE1-200539057AFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyMatch.Core", "FuzzyMatch.Core\FuzzyMatch.Core.csproj", "{F092CE3F-E5D0-4D61-A36B-0F204776AE52}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuzzyMatch.Core", "FuzzyMatch.Core\FuzzyMatch.Core.csproj", "{F092CE3F-E5D0-4D61-A36B-0F204776AE52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

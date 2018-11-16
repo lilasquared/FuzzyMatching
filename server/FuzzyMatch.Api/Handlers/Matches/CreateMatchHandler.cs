@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FuzzyMatch.Core;
 using FuzzyMatch.Core.Appends;
-using FuzzyMatch.Core.Configuration;
+using FuzzyMatch.Core.UoW;
 using MediatR;
 using MediatR.CQRS;
 
@@ -10,18 +9,18 @@ namespace FuzzyMatch.Api.Handlers.Matches
 {
     public class CreateMatchHandler : IRequestHandler<CreateMatch, IResult<Append>>
     {
-        private readonly LiteDatabaseProvider _provider;
+        private readonly DataUnitOfWork _uow;
 
-        public CreateMatchHandler(LiteDatabaseProvider provider)
+        public CreateMatchHandler(DataUnitOfWork uow)
         {
-            _provider = provider;
+            _uow = uow;
         }
 
         public Task<IResult<Append>> Handle(CreateMatch request, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
-                using (var db = _provider(DataContext.Data))
+                return _uow.Execute(db =>
                 {
                     var match = new Append
                     {
@@ -31,7 +30,7 @@ namespace FuzzyMatch.Api.Handlers.Matches
                     };
                     db.GetCollection<Append>().Insert(match);
                     return Result.Success(match);
-                }
+                });
             }, cancellationToken);
         }
     }
